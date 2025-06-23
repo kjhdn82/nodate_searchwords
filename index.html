@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>워들 미니</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <style>
+    body { background-color: #f8f9fa; padding-top: 60px; text-align: center; }
+    .feedback span {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      margin: 3px;
+      line-height: 30px;
+      text-transform: uppercase;
+      font-weight: bold;
+      border-radius: 4px;
+      background-color: #dee2e6;
+      color: #212529;
+    }
+    .correct { background-color: #28a745; color: white; }
+    .exists { background-color: #ffc107; color: white; }
+    .wrong { background-color: #6c757d; color: white; }
+  </style>
+</head>
+<body>
+  <h1 class="mb-4">🔤 워들 미니</h1>
+  <p class="text-muted">세 글자 영어 단어를 맞혀보세요! (5회 시도)</p>
+
+  <form id="wordForm" class="d-flex justify-content-center mb-3" onsubmit="handleSubmit(event)">
+    <input type="text" id="guess" maxlength="3" class="form-control w-auto me-2 text-uppercase" autocomplete="off" required />
+    <button class="btn btn-primary">입력</button>
+  </form>
+
+  <div id="history"></div>
+  <p id="status" class="fw-bold mt-3"></p>
+
+  <script>
+    const wordList = ["cat", "sun", "bag", "map", "top", "jam", "pen"];
+    const answer = wordList[Math.floor(Math.random() * wordList.length)];
+    let attempts = 0;
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById("guess");
+      const guess = input.value.toLowerCase();
+      input.value = "";
+      if (guess.length !== 3) return;
+
+      const row = document.createElement("div");
+      row.className = "feedback";
+
+      for (let i = 0; i < 3; i++) {
+        const span = document.createElement("span");
+        span.textContent = guess[i];
+        if (guess[i] === answer[i]) span.classList.add("correct");
+        else if (answer.includes(guess[i])) span.classList.add("exists");
+        else span.classList.add("wrong");
+        row.appendChild(span);
+      }
+
+      document.getElementById("history").appendChild(row);
+      attempts++;
+
+      if (guess === answer) {
+        document.getElementById("status").textContent = "🎉 정답입니다!";
+        document.getElementById("guess").disabled = true;
+      } else if (attempts >= 5) {
+        document.getElementById("status").textContent = `😢 정답은 "${answer}"였습니다.`;
+        document.getElementById("guess").disabled = true;
+      }
+    }
+  </script>
+</body>
+</html>
